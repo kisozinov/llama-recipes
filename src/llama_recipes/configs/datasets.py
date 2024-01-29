@@ -32,3 +32,17 @@ class custom_dataset:
     file: str = "examples/custom_dataset.py"
     train_split: str = "train"
     test_split: str = "validation"
+
+@dataclass
+class smm_dataset:
+    dataset: str = "smm_dataset"
+    file: str = "src/llama_recipes/datasets/smm_dataset.py"
+    train_split: str = "train"
+    test_split: str = "validation"
+
+@dataclass
+class amazon_dataset:
+    dataset: str = "amazon_dataset"
+    file: str = "src/llama_recipes/datasets/amazon_dataset.py"
+    train_split: str = "train"
+    test_split: str = "validation"

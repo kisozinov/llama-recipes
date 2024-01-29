@@ -133,6 +133,20 @@ def main(**kwargs):
         model = get_peft_model(model, peft_config)
         model.print_trainable_parameters()
 
+    with open("../categories.txt", "r") as f:
+        extra_tokens = []
+        for l in f.readlines():
+            extra_tokens.append(l[:-1])
+    extra_tokens.append("<SOI>")
+    extra_tokens.append("<EOI>")
+    print("extra tokens: ", extra_tokens)
+    special_tokens_dict = {'additional_special_tokens': extra_tokens}
+    num_added_tokens = tokenizer.add_special_tokens(special_tokens_dict)#, special_tokens=True)
+    print("We have added", num_added_tokens, "tokens")
+    print("LEN OF TOKENIZER: ", len(tokenizer))
+
+    model.resize_token_embeddings(len(tokenizer))
+
     #setting up FSDP if enable_fsdp is enabled
     if train_config.enable_fsdp:
         if not train_config.use_peft and train_config.freeze_layers:
@@ -160,8 +174,9 @@ def main(**kwargs):
         model.to("cuda")
 
     dataset_config = generate_dataset_config(train_config, kwargs)
-
      # Load and preprocess the dataset for training and validation
+ #
+
     dataset_train = get_preprocessed_dataset(
         tokenizer,
         dataset_config,
@@ -176,6 +191,8 @@ def main(**kwargs):
         dataset_config,
         split="test",
     )
+    # print(tokenizer.additional_special_tokens)
+
     if not train_config.enable_fsdp or rank == 0:
             print(f"--> Validation Set Length = {len(dataset_val)}")
 

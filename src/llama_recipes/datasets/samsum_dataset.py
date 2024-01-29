@@ -9,7 +9,6 @@ import datasets
 
 def get_preprocessed_samsum(dataset_config, tokenizer, split):
     dataset = datasets.load_dataset("samsum", split=split)
-
     prompt = (
         f"Summarize this dialog:\n{{dialog}}\n---\nSummary:\n"
     )
@@ -19,6 +18,7 @@ def get_preprocessed_samsum(dataset_config, tokenizer, split):
             "prompt": prompt.format(dialog=sample["dialogue"]),
             "summary": sample["summary"],
         }
+    
 
     dataset = dataset.map(apply_prompt_template, remove_columns=list(dataset.features))
 
@@ -35,5 +35,4 @@ def get_preprocessed_samsum(dataset_config, tokenizer, split):
         return sample
 
     dataset = dataset.map(tokenize_add_label, remove_columns=list(dataset.features))
-
     return dataset

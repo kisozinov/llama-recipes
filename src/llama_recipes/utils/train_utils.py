@@ -99,6 +99,7 @@ def train(model, train_dataloader,eval_dataloader, tokenizer, optimizer, lr_sche
                         pbar.update(1)
                 else:
                     # regular backpropagation when fp16 is not used
+                    #loss.requires_grad = True
                     loss.backward()
                     if (step + 1) % gradient_accumulation_steps == 0 or step == len(train_dataloader) - 1:
                         if train_config.gradient_clipping and train_config.gradient_clipping_threshold > 0.0:
